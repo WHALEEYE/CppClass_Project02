@@ -2,7 +2,7 @@
 using namespace cv;
 
 int main() {
-  Mat image = imread("D:\\Documents\\Private\\Avatar\\Avatar01.jpg");
+  Mat image = imread(".\\samples\\bg.jpg");
   imshow("MyPicture", image);
   waitKey(0);
   return 0;
