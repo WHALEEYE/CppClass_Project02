@@ -28,7 +28,7 @@ int main() {
   cout.setf(ios_base::fixed, ios_base::floatfield);
   while (true) {
     cout
-        << "Please choose a picturethat you want to test (must be 128 * 128): ";
+        << "Please choose a picture that you want to test (must be 128 * 128): ";
     imgdir = select_pic();
     cout << imgdir << endl;
     try {
