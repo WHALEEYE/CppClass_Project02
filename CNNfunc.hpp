@@ -20,8 +20,7 @@ extern float fc0_weight[];
 extern float fc0_bias[];
 void conv_relu(const float pic[], const int pic_size, const int pic_cns,
                float fm[], const int fm_size, const int fm_cns,
-               const float weight[], const float bias[], const int stride,
-               const int kernel_ele = 9, const int pad = 1);
+               const float weight[], const float bias[], const int stride);
 float mult(float v1[], float v2[], int dim, int st1, int st2);
 void pooling(const float pic[], const int pic_size, const int cns,
              float pic_pool[], const int pic_pool_size);

@@ -16,12 +16,12 @@
 int main() {
   string imgdir;
   Mat image;
-  float img0[IMG0_SIZE * IMG0_SIZE * IMG0_CNS];
-  float img1[IMG1_SIZE * IMG1_SIZE * IMG1_CNS];
-  float img1_pool[IMG1_POOL_SIZE * IMG1_POOL_SIZE * IMG1_CNS];
-  float img2[IMG2_SIZE * IMG2_SIZE * IMG2_CNS];
-  float img2_pool[IMG2_POOL_SIZE * IMG2_POOL_SIZE * IMG2_CNS];
-  float img3[IMG3_SIZE * IMG3_SIZE * IMG3_CNS];
+  float *img0 = new float[IMG0_SIZE * IMG0_SIZE * IMG0_CNS];
+  float *img1 = new float[IMG1_SIZE * IMG1_SIZE * IMG1_CNS];
+  float *img1_pool = new float[IMG1_POOL_SIZE * IMG1_POOL_SIZE * IMG1_CNS];
+  float *img2 = new float[IMG2_SIZE * IMG2_SIZE * IMG2_CNS];
+  float *img2_pool = new float[IMG2_POOL_SIZE * IMG2_POOL_SIZE * IMG2_CNS];
+  float *img3 = new float[IMG3_SIZE * IMG3_SIZE * IMG3_CNS];
   float bg_pow, face_pow, bg_tensor, face_tensor, bg_score, face_score,
       total_tensor;
   char flag;
@@ -78,5 +78,11 @@ int main() {
       break;
     }
   }
+  delete[] img0;
+  delete[] img1;
+  delete[] img1_pool;
+  delete[] img2;
+  delete[] img2_pool;
+  delete[] img3;
   return 0;
 }
