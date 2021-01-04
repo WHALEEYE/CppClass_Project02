@@ -22,10 +22,18 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="samples\bg.jpg">
+    <Text Include="out.txt">
+      <Filter>Test Pictures</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="samples\bg00.jpg">
       <Filter>Test Pictures</Filter>
     </Image>
-    <Image Include="samples\face.jpg">
+    <Image Include="samples\bg01.jpg">
+      <Filter>Test Pictures</Filter>
+    </Image>
+    <Image Include="samples\face00.jpg">
       <Filter>Test Pictures</Filter>
     </Image>
   </ItemGroup>
