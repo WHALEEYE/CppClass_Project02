@@ -70,9 +70,9 @@ int main() {
     face_score = face_tensor / total_tensor;
 
     cout << "The test result of " << imgdir
-         << ":\nbackground score: " << setprecision(6) << bg_score
-         << "\nface score: " << setprecision(6) << face_score << endl;
-    cout << "Have another picture to input? [y/n]";
+         << ":\n      background score: " << setprecision(6) << bg_score
+         << "\n      face score: " << setprecision(6) << face_score << endl;
+    cout << "\nHave another picture to input? [y/n]";
     cin >> flag;
     if (flag == 'n' || flag == 'N') {
       break;
