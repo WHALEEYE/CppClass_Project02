@@ -1,4 +1,3 @@
-#pragma GCC optimize("O2")
 #include "CNNfunc.hpp"
 
 #define KERNEL_ELE 9
