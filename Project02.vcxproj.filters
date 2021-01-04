@@ -5,9 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Test Pictures">
-      <UniqueIdentifier>{b64d1ac9-48c7-48a8-8ec6-e23f313e37e7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -20,21 +17,13 @@
     <ClCompile Include="weights\face_binary_cls.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CNNfunc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="out.txt">
-      <Filter>Test Pictures</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="samples\bg00.jpg">
-      <Filter>Test Pictures</Filter>
-    </Image>
-    <Image Include="samples\bg01.jpg">
-      <Filter>Test Pictures</Filter>
-    </Image>
-    <Image Include="samples\face00.jpg">
-      <Filter>Test Pictures</Filter>
-    </Image>
+    <ClInclude Include="CNNfunc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

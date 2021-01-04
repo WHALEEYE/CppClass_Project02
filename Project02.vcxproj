@@ -141,15 +141,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CNNbyCpp.cpp" />
+    <ClCompile Include="CNNfunc.cpp" />
     <ClCompile Include="weights\face_binary_cls.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="out.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="samples\bg00.jpg" />
-    <Image Include="samples\bg01.jpg" />
-    <Image Include="samples\face00.jpg" />
+    <ClInclude Include="CNNfunc.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
