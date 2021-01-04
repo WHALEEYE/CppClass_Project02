@@ -28,24 +28,24 @@ float mult(float v1[], float v2[], int dim, int st1, int st2) {
   return sum / (float)1e6;
 }
 
-void conv_relu(const float pic[], const int pic_size, const int pic_cns,
-               float fm[], const int fm_size, const int fm_cns,
-               const float weight[], const float bias[], const int stride,
-               const int kernel_ele = 9, const int pad = 1) {
+void conv_relu_pad1(const float pic[], const int pic_size, const int pic_cns,
+                    float fm[], const int fm_size, const int fm_cns,
+                    const float weight[], const float bias[]) {
+  const int kernel_ele = 9;
   float *temp1 = new float[kernel_ele];
   float *temp2 = new float[kernel_ele];
   int centerIdx;
   int kernelStart;
   float sum;
   for (int curOutChannel = 0; curOutChannel < fm_cns; curOutChannel++) {
-    for (int curRow = 0; curRow < pic_size; curRow += stride) {
-      for (int curCol = 0; curCol < pic_size; curCol += stride) {
+    for (int curRow = 0; curRow < pic_size; curRow += 2) {
+      for (int curCol = 0; curCol < pic_size; curCol += 2) {
         sum = bias[curOutChannel];
         for (int curInChannel = 0; curInChannel < pic_cns; curInChannel++) {
           kernelStart =
               curOutChannel * pic_cns * kernel_ele + curInChannel * kernel_ele;
           for (int idx = 0; idx < kernel_ele; idx++) {
-            temp2[idx] = conv0_weight[kernelStart + idx];
+            temp2[idx] = weight[kernelStart + idx];
           }
           centerIdx =
               curInChannel * pic_size * pic_size + curRow * pic_size + curCol;
@@ -69,9 +69,52 @@ void conv_relu(const float pic[], const int pic_size, const int pic_cns,
                          : pic[centerIdx + pic_size + 1];
           sum += mult(temp1, temp2, kernel_ele, 0, 0);
         }
-         fm[curOutChannel * fm_size * fm_size + curRow / stride * fm_size +
-           curCol / stride] = (sum < 0.00f ? 0.00f : sum);
-        //fm[curOutChannel * fm_size * fm_size + curRow / stride * fm_size +
+        fm[curOutChannel * fm_size * fm_size + curRow / 2 * fm_size +
+           curCol / 2] = (sum < 0.00f ? 0.00f : sum);
+        // fm[curOutChannel * fm_size * fm_size + curRow / stride * fm_size +
+        //   curCol / stride] = sum;
+      }
+    }
+  }
+  delete[] temp1;
+  delete[] temp2;
+}
+
+void conv_relu_pad0(const float pic[], const int pic_size, const int pic_cns,
+                    float fm[], const int fm_size, const int fm_cns,
+                    const float weight[], const float bias[]) {
+  const int kernel_ele = 9;
+  float *temp1 = new float[kernel_ele];
+  float *temp2 = new float[kernel_ele];
+  int centerIdx;
+  int kernelStart;
+  float sum;
+  for (int curOutChannel = 0; curOutChannel < fm_cns; curOutChannel++) {
+    for (int curRow = 1; curRow < pic_size - 1; curRow++) {
+      for (int curCol = 1; curCol < pic_size - 1; curCol++) {
+        sum = bias[curOutChannel];
+        for (int curInChannel = 0; curInChannel < pic_cns; curInChannel++) {
+          kernelStart =
+              curOutChannel * pic_cns * kernel_ele + curInChannel * kernel_ele;
+          for (int idx = 0; idx < kernel_ele; idx++) {
+            temp2[idx] = conv0_weight[kernelStart + idx];
+          }
+          centerIdx =
+              curInChannel * pic_size * pic_size + curRow * pic_size + curCol;
+          temp1[0] = pic[centerIdx - pic_size - 1];
+          temp1[1] = pic[centerIdx - pic_size];
+          temp1[2] = pic[centerIdx - pic_size + 1];
+          temp1[3] = pic[centerIdx - 1];
+          temp1[4] = pic[centerIdx];
+          temp1[5] = pic[centerIdx + 1];
+          temp1[6] = pic[centerIdx + pic_size - 1];
+          temp1[7] = pic[centerIdx + pic_size];
+          temp1[8] = pic[centerIdx + pic_size + 1];
+          sum += mult(temp1, temp2, kernel_ele, 0, 0);
+        }
+        fm[curOutChannel * fm_size * fm_size + curRow / 2 * fm_size +
+           curCol / 2] = (sum < 0.00f ? 0.00f : sum);
+        // fm[curOutChannel * fm_size * fm_size + curRow / stride * fm_size +
         //   curCol / stride] = sum;
       }
     }
@@ -118,9 +161,9 @@ void printMatrix(const float mtx[], int size, int channels, ofstream &ofs) {
 #define IMG1_SIZE 64
 #define IMG1_CNS 16
 #define IMG1_POOL_SIZE 32
-#define IMG2_SIZE 32
+#define IMG2_SIZE 30
 #define IMG2_CNS 32
-#define IMG2_POOL_SIZE 16
+#define IMG2_POOL_SIZE 15
 #define IMG3_SIZE 8
 #define IMG3_CNS 32
 
@@ -139,34 +182,34 @@ int main() {
   }
 
   float img1[IMG1_SIZE * IMG1_SIZE * IMG1_CNS];
-  conv_relu(img0, IMG0_SIZE, IMG0_CNS, img1, IMG1_SIZE, IMG1_CNS, conv0_weight,
-            conv0_bias, 2);
+  conv_relu_pad1(img0, IMG0_SIZE, IMG0_CNS, img1, IMG1_SIZE, IMG1_CNS,
+                 conv0_weight, conv0_bias);
 
   float img1_pool[IMG1_POOL_SIZE * IMG1_POOL_SIZE * IMG1_CNS];
   pooling(img1, IMG1_SIZE, IMG1_CNS, img1_pool, IMG1_POOL_SIZE);
 
   float img2[IMG2_SIZE * IMG2_SIZE * IMG2_CNS];
-  conv_relu(img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2, IMG2_SIZE, IMG2_CNS,
-            conv1_weight, conv1_bias, 1);
+  conv_relu_pad1(img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2, IMG2_SIZE, IMG2_CNS,
+                 conv1_weight, conv1_bias);
 
   float img2_pool[IMG2_POOL_SIZE * IMG2_POOL_SIZE * IMG2_CNS];
   pooling(img2, IMG2_SIZE, IMG2_CNS, img2_pool, IMG2_POOL_SIZE);
 
   float img3[IMG3_SIZE * IMG3_SIZE * IMG3_CNS];
-  conv_relu(img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3, IMG3_SIZE, IMG3_CNS,
-            conv2_weight, conv2_bias, 2);
+  conv_relu_pad1(img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3, IMG3_SIZE, IMG3_CNS,
+                 conv2_weight, conv2_bias);
 
-  //ofstream ofs(".\\out.txt");
-  //printMatrix(img1, IMG1_SIZE, IMG1_CNS, ofs);
-  //printMatrix(img3, IMG3_SIZE, IMG3_CNS, ofs);
+  // ofstream ofs(".\\out.txt");
+  // printMatrix(img1, IMG1_SIZE, IMG1_CNS, ofs);
+  // printMatrix(img3, IMG3_SIZE, IMG3_CNS, ofs);
 
-   float bg_pow = mult(img3, fc0_weight, 2048, 0, 0) + fc0_bias[0];
-   float face_pow = mult(img3, fc0_weight, 2048, 0, 2048) + fc0_bias[1];
-   double bg_tensor = pow(CONSTE, bg_pow);
-   double face_tensor = pow(CONSTE, face_pow);
-   double total_tensor = bg_tensor + face_tensor;
-   double bg_score = bg_tensor / total_tensor;
-   double face_score = face_tensor / total_tensor;
-   cout << "background score: " << bg_score << "\nface score: " << face_score;
+  float bg_pow = mult(img3, fc0_weight, 2048, 0, 0) + fc0_bias[0];
+  float face_pow = mult(img3, fc0_weight, 2048, 0, 2048) + fc0_bias[1];
+  double bg_tensor = pow(CONSTE, bg_pow);
+  double face_tensor = pow(CONSTE, face_pow);
+  double total_tensor = bg_tensor + face_tensor;
+  double bg_score = bg_tensor / total_tensor;
+  double face_score = face_tensor / total_tensor;
+  cout << "background score: " << bg_score << "\nface score: " << face_score;
   return 0;
 }
