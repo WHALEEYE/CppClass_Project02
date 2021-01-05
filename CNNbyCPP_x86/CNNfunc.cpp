@@ -67,8 +67,54 @@ void conv_relu(const float pic[], const int pic_size, const int pic_cns,
       for (int curCol = 0; curCol < pic_size; curCol += stride) {
         sum = bias[curOutChannel];
         for (int curInChannel = 0; curInChannel < pic_cns; curInChannel++) {
-          kernelStart =
-              curOutChannel * pic_cns * 9 + curInChannel * 9;
+          kernelStart = curOutChannel * pic_cns * 9 + curInChannel * 9;
+          for (int idx = 0; idx < 9; idx++) {
+            temp2[idx] = weight[kernelStart + idx];
+          }
+          centerIdx =
+              curInChannel * pic_size * pic_size + curRow * pic_size + curCol;
+          temp1[0] = (curCol == 0 || curRow == 0)
+                         ? 0.00f
+                         : pic[centerIdx - pic_size - 1];
+          temp1[1] = (curRow == 0) ? 0.00f : pic[centerIdx - pic_size];
+          temp1[2] = (curRow == 0 || curCol == (pic_size - 1))
+                         ? 0.00f
+                         : pic[centerIdx - pic_size + 1];
+          temp1[3] = (curCol == 0) ? 0.00f : pic[centerIdx - 1];
+          temp1[4] = pic[centerIdx];
+          temp1[5] = (curCol == (pic_size - 1)) ? 0.00f : pic[centerIdx + 1];
+          temp1[6] = (curCol == 0 || curRow == (pic_size - 1))
+                         ? 0.00f
+                         : pic[centerIdx + pic_size - 1];
+          temp1[7] =
+              curRow == (pic_size - 1) ? 0.00f : pic[centerIdx + pic_size];
+          temp1[8] = (curRow == (pic_size - 1) || curCol == (pic_size - 1))
+                         ? 0.00f
+                         : pic[centerIdx + pic_size + 1];
+          sum += mult(temp1, temp2, 9, 0, 0);
+        }
+        fm[curOutChannel * fm_size * fm_size + curRow / stride * fm_size +
+           curCol / stride] = (sum < 0.00f ? 0.00f : sum);
+      }
+    }
+  }
+}
+
+void conv_relu_t(const float pic[], const int pic_size, const int pic_cns,
+                 float fm[], const int fm_size, const int thread_outchannel,
+                 const float weight[], const float bias[], const int stride) {
+  float temp1[9];
+  float temp2[9];
+  int centerIdx;
+  int kernelStart;
+  float sum;
+  for (int curOutChannel = thread_outchannel;
+       curOutChannel < thread_outchannel + 4; curOutChannel++) {
+    for (int curRow = 0; curRow < pic_size; curRow += stride) {
+      for (int curCol = 0; curCol < pic_size; curCol += stride) {
+        sum = bias[curOutChannel];
+        for (int curInChannel = 0; curInChannel < pic_cns; curInChannel++) {
+          kernelStart = curOutChannel * pic_cns * 9 + curInChannel * 9;
           for (int idx = 0; idx < 9; idx++) {
             temp2[idx] = weight[kernelStart + idx];
           }
@@ -106,6 +152,25 @@ void pooling(const float pic[], const int pic_size, const int cns,
   int startIdx;
   float max;
   for (int k = 0; k < cns; k++) {
+    for (int i = 0; i < pic_size; i += 2) {
+      for (int j = 0; j < pic_size; j += 2) {
+        startIdx = k * pic_size * pic_size + i * pic_size + j;
+        max = 0;
+        for (int idx = 0; idx < 4; idx++) {
+          max = pic[startIdx + idx] > max ? pic[startIdx + idx] : max;
+        }
+        pic_pool[k * pic_pool_size * pic_pool_size + i / 2 * pic_pool_size +
+                 j / 2] = max;
+      }
+    }
+  }
+}
+
+void pooling_t(const float pic[], const int pic_size, const int thread_cns,
+               float pic_pool[], const int pic_pool_size) {
+  int startIdx;
+  float max;
+  for (int k = thread_cns; k < thread_cns + 4; k++) {
     for (int i = 0; i < pic_size; i += 2) {
       for (int j = 0; j < pic_size; j += 2) {
         startIdx = k * pic_size * pic_size + i * pic_size + j;

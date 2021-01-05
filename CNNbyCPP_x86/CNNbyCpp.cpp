@@ -26,8 +26,8 @@ int main() {
   char flag;
   cout.setf(ios_base::fixed, ios_base::floatfield);
   while (true) {
-    cout
-        << "Please choose a picture that you want to test (must be 128 * 128): ";
+    cout << "Please choose a picture that you want to test (must be 128 * "
+            "128): ";
     imgdir = select_pic();
     cout << imgdir << endl;
     try {
@@ -46,19 +46,125 @@ int main() {
       cerr << "\nInvalid directory. Please enter again.\n";
       continue;
     }
+    std::chrono::steady_clock::time_point start =
+        std::chrono::steady_clock::now();
 
+    // The simple way of the 1st layer of convolution & ReLU //
+    /*
     conv_relu(img0, IMG0_SIZE, IMG0_CNS, img1, IMG1_SIZE, IMG1_CNS,
               conv0_weight, conv0_bias, 2);
+    */
 
+    // The multithread way of the 1st layer of convolution & ReLU //
+    thread conv_t1(conv_relu_t, img0, IMG0_SIZE, IMG0_CNS, img1, IMG1_SIZE, 0,
+                   conv0_weight, conv0_bias, 2);
+    thread conv_t2(conv_relu_t, img0, IMG0_SIZE, IMG0_CNS, img1, IMG1_SIZE, 4,
+                   conv0_weight, conv0_bias, 2);
+    thread conv_t3(conv_relu_t, img0, IMG0_SIZE, IMG0_CNS, img1, IMG1_SIZE, 8,
+                   conv0_weight, conv0_bias, 2);
+    conv_relu_t(img0, IMG0_SIZE, IMG0_CNS, img1, IMG1_SIZE, 12, conv0_weight,
+                conv0_bias, 2);
+    conv_t1.join();
+    conv_t2.join();
+    conv_t3.join();
+
+    // The simple way of the 1st layer of pooling //
     pooling(img1, IMG1_SIZE, IMG1_CNS, img1_pool, IMG1_POOL_SIZE);
 
+    // The multithread way of the 1st layer of pooling //
+    /*
+    thread pool_t1(pooling_t, img1, IMG1_SIZE, 0, img1_pool, IMG1_POOL_SIZE);
+    thread pool_t2(pooling_t, img1, IMG1_SIZE, 4, img1_pool, IMG1_POOL_SIZE);
+    thread pool_t3(pooling_t, img1, IMG1_SIZE, 8, img1_pool, IMG1_POOL_SIZE);
+    pooling_t(img1, IMG1_SIZE, 12, img1_pool, IMG1_POOL_SIZE);
+    pool_t1.join();
+    pool_t2.join();
+    pool_t3.join();
+    */
+
+    // The simple way of the 2nd layer of convolution & ReLU //
+    /*
     conv_relu(img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2, IMG2_SIZE, IMG2_CNS,
               conv1_weight, conv1_bias, 1);
+    */
 
+    // The multithread way of the 2nd layer of convolution & ReLU //
+    thread conv_t4(conv_relu_t, img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2,
+                   IMG2_SIZE, 0, conv1_weight, conv1_bias, 1);
+    thread conv_t5(conv_relu_t, img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2,
+                   IMG2_SIZE, 4, conv1_weight, conv1_bias, 1);
+    thread conv_t6(conv_relu_t, img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2,
+                   IMG2_SIZE, 8, conv1_weight, conv1_bias, 1);
+    thread conv_t7(conv_relu_t, img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2,
+                   IMG2_SIZE, 12, conv1_weight, conv1_bias, 1);
+    thread conv_t8(conv_relu_t, img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2,
+                   IMG2_SIZE, 16, conv1_weight, conv1_bias, 1);
+    thread conv_t9(conv_relu_t, img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2,
+                   IMG2_SIZE, 20, conv1_weight, conv1_bias, 1);
+    thread conv_t10(conv_relu_t, img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2,
+                    IMG2_SIZE, 24, conv1_weight, conv1_bias, 1);
+    conv_relu_t(img1_pool, IMG1_POOL_SIZE, IMG1_CNS, img2, IMG2_SIZE, 28,
+                conv1_weight, conv1_bias, 1);
+    conv_t4.join();
+    conv_t5.join();
+    conv_t6.join();
+    conv_t7.join();
+    conv_t8.join();
+    conv_t9.join();
+    conv_t10.join();
+
+    // The simple way of the 2nd layer of pooling //
     pooling(img2, IMG2_SIZE, IMG2_CNS, img2_pool, IMG2_POOL_SIZE);
 
+    // The multithread way of the 2nd layer of pooling //
+    /*
+    thread pool_t4(pooling_t, img2, IMG2_SIZE, 0, img2_pool, IMG2_POOL_SIZE);
+    thread pool_t5(pooling_t, img2, IMG2_SIZE, 4, img2_pool, IMG2_POOL_SIZE);
+    thread pool_t6(pooling_t, img2, IMG2_SIZE, 8, img2_pool, IMG2_POOL_SIZE);
+    thread pool_t7(pooling_t, img2, IMG2_SIZE, 12, img2_pool, IMG2_POOL_SIZE);
+    thread pool_t8(pooling_t, img2, IMG2_SIZE, 16, img2_pool, IMG2_POOL_SIZE);
+    thread pool_t9(pooling_t, img2, IMG2_SIZE, 20, img2_pool, IMG2_POOL_SIZE);
+    thread pool_t10(pooling_t, img2, IMG2_SIZE, 24, img2_pool, IMG2_POOL_SIZE);
+    pooling_t(img2, IMG2_SIZE, 28, img2_pool, IMG2_POOL_SIZE);
+    pool_t4.join();
+    pool_t5.join();
+    pool_t6.join();
+    pool_t7.join();
+    pool_t8.join();
+    pool_t9.join();
+    pool_t10.join();
+    */
+
+    // The simple way of the 3rd layer of convolution & ReLU //
     conv_relu(img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3, IMG3_SIZE, IMG3_CNS,
               conv2_weight, conv2_bias, 2);
+
+    // The multithread way of the 3rd layer of convolution & ReLU //
+    /*
+    thread conv_t11(conv_relu_t, img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3,
+                    IMG3_SIZE, 0, conv2_weight, conv2_bias, 2);
+    thread conv_t12(conv_relu_t, img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3,
+                    IMG3_SIZE, 4, conv2_weight, conv2_bias, 2);
+    thread conv_t13(conv_relu_t, img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3,
+                    IMG3_SIZE, 8, conv2_weight, conv2_bias, 2);
+    thread conv_t14(conv_relu_t, img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3,
+                    IMG3_SIZE, 12, conv2_weight, conv2_bias, 2);
+    thread conv_t15(conv_relu_t, img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3,
+                    IMG3_SIZE, 16, conv2_weight, conv2_bias, 2);
+    thread conv_t16(conv_relu_t, img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3,
+                    IMG3_SIZE, 20, conv2_weight, conv2_bias, 2);
+    thread conv_t17(conv_relu_t, img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3,
+                    IMG3_SIZE, 24, conv2_weight, conv2_bias, 2);
+    conv_relu_t(img2_pool, IMG2_POOL_SIZE, IMG2_CNS, img3, IMG3_SIZE, 28,
+                conv2_weight, conv2_bias, 2);
+    conv_t11.join();
+    conv_t12.join();
+    conv_t13.join();
+    conv_t14.join();
+    conv_t15.join();
+    conv_t16.join();
+    conv_t17.join();
+    */
 
     bg_pow = mult(img3, fc0_weight, 2048, 0, 0) + fc0_bias[0];
     face_pow = mult(img3, fc0_weight, 2048, 0, 2048) + fc0_bias[1];
@@ -71,6 +177,14 @@ int main() {
     cout << "The test result of " << imgdir
          << ":\n      background score: " << setprecision(6) << bg_score
          << "\n      face score: " << setprecision(6) << face_score << endl;
+
+    std::chrono::steady_clock::time_point end =
+        std::chrono::steady_clock::now();
+    cout << "Calculation took "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()
+         << " milliseconds.";
+
     cout << "\nHave another picture to input? [y/n]";
     cin >> flag;
     if (flag == 'n' || flag == 'N') {
