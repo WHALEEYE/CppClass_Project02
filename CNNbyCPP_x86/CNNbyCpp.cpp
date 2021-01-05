@@ -46,8 +46,8 @@ int main() {
       cerr << "\nInvalid directory. Please enter again.\n";
       continue;
     }
-    std::chrono::steady_clock::time_point start =
-        std::chrono::steady_clock::now();
+    // std::chrono::steady_clock::time_point start =
+    //    std::chrono::steady_clock::now();
 
     // The simple way of the 1st layer of convolution & ReLU //
     /*
@@ -178,12 +178,12 @@ int main() {
          << ":\n      background score: " << setprecision(6) << bg_score
          << "\n      face score: " << setprecision(6) << face_score << endl;
 
-    std::chrono::steady_clock::time_point end =
-        std::chrono::steady_clock::now();
-    cout << "Calculation took "
-         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
-                .count()
-         << " milliseconds.";
+    // std::chrono::steady_clock::time_point end =
+    //    std::chrono::steady_clock::now();
+    // cout << "Calculation took "
+    //     << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+    //            .count()
+    //     << " milliseconds.";
 
     cout << "\nHave another picture to input? [y/n]";
     cin >> flag;
