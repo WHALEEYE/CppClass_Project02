@@ -1,4 +1,4 @@
-#include "CNNfunc.hpp"
+#include "cnn_funcs.hpp"
 
 #define KERNEL_ELE 9
 #define IMG0_SIZE 128

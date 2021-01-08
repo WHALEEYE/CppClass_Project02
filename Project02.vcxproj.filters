@@ -11,18 +11,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CNNbyCPP_x86\CNNbyCpp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CNNbyCPP_x86\CNNfunc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CNNbyCPP_x86\weights\face_binary_cls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CNNbyCPP_x86\cnn_funcs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CNNbyCPP_x86\cnn_by_cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CNNbyCPP_x86\CNNfunc.hpp">
+    <ClInclude Include="CNNbyCPP_x86\cnn_funcs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

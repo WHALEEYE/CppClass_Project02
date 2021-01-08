@@ -140,11 +140,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CNNbyCPP_x86\CNNfunc.hpp" />
+    <ClInclude Include="CNNbyCPP_x86\cnn_funcs.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CNNbyCPP_x86\CNNbyCpp.cpp" />
-    <ClCompile Include="CNNbyCPP_x86\CNNfunc.cpp" />
+    <ClCompile Include="CNNbyCPP_x86\cnn_by_cpp.cpp" />
+    <ClCompile Include="CNNbyCPP_x86\cnn_funcs.cpp" />
     <ClCompile Include="CNNbyCPP_x86\weights\face_binary_cls.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,5 @@
-# CppClass_Project02
+# Simple_CNN_by_Cpp
+
 The 2nd project (Simple CNN) of Sustech C++ class 2020 Fall.
 
 ## Introduction
@@ -14,7 +15,7 @@ Notice that the given picture must be `128 * 128`.
 
 ## Platform support
 
-This program have an ARM version (`CNNbyCPP_ARM.cpp`) and a x86 version (`CNNbyCPP.cpp`).
+This program have an ARM version (`cnn_by_cpp_arm.cpp`) and a x86 version (`cnn_by_cpp.cpp`).
 
 ![x86](https://github.com/WHALEEYE/CppClass_Project02/blob/master/screenshots/x86_version.png "x86 version")
 
@@ -24,7 +25,7 @@ This program have an ARM version (`CNNbyCPP_ARM.cpp`) and a x86 version (`CNNbyC
 
 The source codes is a solution of `Visual Studio 2019`. You can find the `Project02.sln` file and open it in Visual Studio 2019.
 
-If you only want to get the source codes, you can get them in the folder `CNNbyCPP_x86` (x86 version) or `CNNbyCPP_ARM` (ARM version).
+If you only want to get the source codes, you can get them in the folder `cnn_by_cpp_x86` (x86 version) or `cnn_by_cpp_arm` (ARM version).
 
 ## Select Pictures
 

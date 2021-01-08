@@ -1,4 +1,4 @@
-#include "CNNfunc.hpp"
+#include "cnn_funcs.hpp"
 string Lpcwstr2String(LPCWSTR lps) {
   int len = WideCharToMultiByte(CP_ACP, 0, lps, -1, NULL, 0, NULL, NULL);
   if (len <= 0) {
